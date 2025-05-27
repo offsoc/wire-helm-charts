@@ -19,3 +19,8 @@ dependencies:
     version: <chart-version>
     repository: <chart-repository>
 ```
+
+The charts from this repository are pulled by the [cailleach pipeline](https://github.com/zinfra/cailleach/blob/master/ci/pipelines/prod-ops/helm-charts-main.dhall) and manifested in 
+the [wire-build's build.json file](https://github.com/wireapp/wire-builds/blob/dev/build.json). This `build.json` represents the list of all the wire charts which gets shipped together to the wire-could and air-gapped environments.
+
+Check [the workflow diagram of the air-gapped environment](https://github.com/wireapp/wire-server-deploy/blob/master/offline/pull_helm_charts_flow.md)
