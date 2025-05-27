@@ -1,2 +1,2 @@
-# Default values for cert-manager - 1.16.3
-# https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
+# cert-manager:
+#  <here goes the values.yaml of the cert-manager sub chart: https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml>
