@@ -1,0 +1,45 @@
+kube-prometheus-stack:
+  prometheus:
+    ingress:
+      enabled: true
+      annotations:
+        nginx.ingress.kubernetes.io/auth-type: basic
+        nginx.ingress.kubernetes.io/auth-secret: prometheus-basic-auth
+        nginx.ingress.kubernetes.io/auth-realm: "Authentication Required - Prometheus"
+      ingressClassName: nginx
+      hosts:
+        - "prometheus.<domain_name>" #replace with your domain
+      # The secretName is used to store the TLS certificate and key for the Prometheus ingress.
+      path: /
+      tls:
+      - hosts:
+        - prometheus.<domain_name> #replace with your domain
+        secretName: <tls_secret_name> #replace with your TLS secret name
+    service:
+      type: ClusterIP
+    prometheusSpec:
+      additionalScrapeConfigs:
+        - job_name: 'node-exporters'
+          static_configs:
+            - targets:
+              - "kubenode1:9100" # replace with your node names or IPs
+              - "kubenode2:9100" # replace with your node names or IPs
+              - "kubenode3:9100" # replace with your node names or IPs
+  # Both Grafana and Alertmanager is disabled in this configuration.
+  grafana:
+    enabled: false
+  alertmanager:
+    enabled: false
+  # This section is used to create a secret for basic authentication in the Prometheus ingress.
+  # The secret contains a base64 encoded username and password.
+  # NOTE: crete this secret using the following command:
+  # htpasswd -nb admin <secure_password> | base64
+  extraManifests:
+    - apiVersion: v1
+      kind: Secret
+      metadata:
+        name: prometheus-basic-auth
+        namespace: monitoring
+      type: Opaque
+      data:
+        auth: <base64_encoded_username_password> # replace with your base64 encoded username and password
