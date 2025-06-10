@@ -18,14 +18,7 @@ kube-prometheus-stack:
         secretName: <tls_secret_name> # replace with your preferred secret name (eg. prometheus-tls-cert), cert-manager will create this automatically
     service:
       type: ClusterIP
-    prometheusSpec:
-      additionalScrapeConfigs:
-        - job_name: 'node-exporters'
-          static_configs:
-            - targets:
-              - "kubenode1:9100" # replace with your node names or IPs
-              - "kubenode2:9100" # replace with your node names or IPs
-              - "kubenode3:9100" # replace with your node names or IPs
+
   # Both Grafana and Alertmanager is disabled in this configuration.
   grafana:
     enabled: false
