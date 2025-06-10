@@ -3,6 +3,7 @@ kube-prometheus-stack:
     ingress:
       enabled: true
       annotations:
+        cert-manager.io/issuer: letsencrypt-http01 # namespaced scope issuer. Copy the issuer from default namespace to a different namespace one where the chart is installed.
         nginx.ingress.kubernetes.io/auth-type: basic
         nginx.ingress.kubernetes.io/auth-secret: prometheus-basic-auth
         nginx.ingress.kubernetes.io/auth-realm: "Authentication Required - Prometheus"
@@ -14,7 +15,7 @@ kube-prometheus-stack:
       tls:
       - hosts:
         - prometheus.<domain_name> #replace with your domain
-        secretName: <tls_secret_name> #replace with your TLS secret name
+        secretName: <tls_secret_name> # replace with your preferred secret name (eg. prometheus-tls-cert), cert-manager will create this automatically
     service:
       type: ClusterIP
     prometheusSpec:
@@ -39,7 +40,7 @@ kube-prometheus-stack:
       kind: Secret
       metadata:
         name: prometheus-basic-auth
-        namespace: monitoring
+        namespace: monitoring # replace with your namespace
       type: Opaque
       data:
         auth: <base64_encoded_username_password> # replace with your base64 encoded username and password
