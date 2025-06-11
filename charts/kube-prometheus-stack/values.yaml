@@ -18,7 +18,28 @@ kube-prometheus-stack:
         secretName: <tls_secret_name> # replace with your preferred secret name (eg. prometheus-tls-cert), cert-manager will create this automatically
     service:
       type: ClusterIP
+    
+    prometheusSpec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - kubenode3 
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-storage
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 50Gi
 
+      retention: 15d
+      retentionSize: 45GiB
   # Both Grafana and Alertmanager is disabled in this configuration.
   grafana:
     enabled: false
