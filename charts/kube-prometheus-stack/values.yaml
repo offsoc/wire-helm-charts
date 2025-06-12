@@ -1,3 +1,10 @@
+# Variables to set locaL PVC Oon kubenode for Prometheus storage
+# If this values get modified, please adjust the `nodename` and `storage` in the prometheusSpec:
+nodeName: kubenode3
+storageSize: 50Gi
+volumeMountPath: /mnt/prometheus-data
+
+# This is the values.yaml file for the Prometheus stack Helm chart.
 kube-prometheus-stack:
   prometheus:
     ingress:

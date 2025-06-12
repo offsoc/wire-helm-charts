@@ -4,13 +4,13 @@ metadata:
   name: prometheus-local-pv
 spec:
   capacity:
-    storage: 50Gi
+    storage: {{ .Values.storageSize }}
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
-    path: /mnt/prometheus-data
+    path: {{ .Values.volumeMountPath }}
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -18,5 +18,5 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - kubenode3
+                - {{ .Values.nodeName }}
             
