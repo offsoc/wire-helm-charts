@@ -2,13 +2,18 @@
 # If this values get modified, please adjust the `nodename` and `storage` in the prometheusSpec:
 nodeName: kubenode3
 storageSize: 50Gi
+storageClassName: local-prometheus-storage
 volumeMountPath: /mnt/prometheus-data
 
 # This is the values.yaml file for the Prometheus stack Helm chart.
 kube-prometheus-stack:
   prometheus:
     ingress:
-      enabled: true
+      # If you want to expose Prometheus on public internet, set this to true
+      # If you want to expose Prometheus on private network, set this to false.
+      # If you want to use both TLS and basic authentication, set this to true
+      # and configure the domain name and the auth for extraManifests.
+      enabled: false
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-http01 # cluster issuer name
         nginx.ingress.kubernetes.io/auth-type: basic
@@ -22,7 +27,7 @@ kube-prometheus-stack:
       tls:
       - hosts:
         - prometheus.<domain_name> #replace with your domain
-        secretName: <tls_secret_name> # replace with your preferred secret name (eg. prometheus-tls-cert), cert-manager will create this automatically
+        secretName: prometheus-tls-cert # replace with your preferred secret name (eg. prometheus-tls-cert), cert-manager will create this automatically
     service:
       type: ClusterIP
     
@@ -39,7 +44,7 @@ kube-prometheus-stack:
       storageSpec:
         volumeClaimTemplate:
           spec:
-            storageClassName: local-storage
+            storageClassName: local-prometheus-storage
             accessModes: ["ReadWriteOnce"]
             resources:
               requests:
@@ -52,16 +57,3 @@ kube-prometheus-stack:
     enabled: false
   alertmanager:
     enabled: false
-  # This section is used to create a secret for basic authentication in the Prometheus ingress.
-  # The secret contains a base64 encoded username and password.
-  # NOTE: crete this secret using the following command:
-  # htpasswd -nb admin <secure_password> | base64
-  extraManifests:
-    - apiVersion: v1
-      kind: Secret
-      metadata:
-        name: prometheus-basic-auth
-        namespace: monitoring # replace with your namespace
-      type: Opaque
-      data:
-        auth: <base64_encoded_username_password> # replace with your base64 encoded username and password
