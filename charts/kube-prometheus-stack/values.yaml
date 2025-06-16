@@ -1,0 +1,59 @@
+# Variables to set locaL PVC Oon kubenode for Prometheus storage
+# If this values get modified, please adjust the `nodeName` storageSize and `storageClassName` in the prometheusSpec:
+nodeName: kubenode3
+storageSize: 50Gi
+storageClassName: local-prometheus-storage
+volumeMountPath: /mnt/prometheus-data
+
+# This is the values.yaml file for the Prometheus stack Helm chart.
+kube-prometheus-stack:
+  prometheus:
+    ingress:
+      # If you want to expose Prometheus on public internet, set this to true
+      # If you want to expose Prometheus on private network, set this to false.
+      # If you want to use both TLS and basic authentication, set this to true
+      # and configure the domain name and the auth for extraManifests.
+      enabled: false
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-http01 # get cluster issuer via $kubectl get clusterissuers and replace
+        nginx.ingress.kubernetes.io/auth-type: basic
+        nginx.ingress.kubernetes.io/auth-secret: prometheus-basic-auth
+        nginx.ingress.kubernetes.io/auth-realm: "Authentication Required - Prometheus"
+      ingressClassName: nginx
+      hosts:
+        - "prometheus.<domain_name>" #replace with your domain
+      # The secretName is used to store the TLS certificate and key for the Prometheus ingress.
+      path: /
+      tls:
+      - hosts:
+        - prometheus.<domain_name> #replace with your domain
+        secretName: prometheus-tls-cert # replace with your preferred secret name for TLS cert 
+    service:
+      type: ClusterIP
+    
+    prometheusSpec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - kubenode3 
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-prometheus-storage
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 50Gi
+
+      retention: 15d
+      retentionSize: 45GiB
+  # Both Grafana and Alertmanager is disabled in this configuration.
+  grafana:
+    enabled: false
+  alertmanager:
+    enabled: false
