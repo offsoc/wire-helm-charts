@@ -1,5 +1,5 @@
 # Variables to set locaL PVC Oon kubenode for Prometheus storage
-# If this values get modified, please adjust the `nodename` and `storage` in the prometheusSpec:
+# If this values get modified, please adjust the `nodeName` storageSize and `storageClassName` in the prometheusSpec:
 nodeName: kubenode3
 storageSize: 50Gi
 storageClassName: local-prometheus-storage
@@ -15,7 +15,7 @@ kube-prometheus-stack:
       # and configure the domain name and the auth for extraManifests.
       enabled: false
       annotations:
-        cert-manager.io/cluster-issuer: <clusterIssuer> # get cluster issuer via $kubectl get clusterissuers
+        cert-manager.io/cluster-issuer: letsencrypt-http01 # get cluster issuer via $kubectl get clusterissuers and replace
         nginx.ingress.kubernetes.io/auth-type: basic
         nginx.ingress.kubernetes.io/auth-secret: prometheus-basic-auth
         nginx.ingress.kubernetes.io/auth-realm: "Authentication Required - Prometheus"
@@ -27,7 +27,7 @@ kube-prometheus-stack:
       tls:
       - hosts:
         - prometheus.<domain_name> #replace with your domain
-        secretName: <name-your-secret> # replace with your preferred secret name (eg. prometheus-tls-cert), cert-manager will create this automatically both the cert and secret with the same name
+        secretName: prometheus-tls-cert # replace with your preferred secret name for TLS cert 
     service:
       type: ClusterIP
     
@@ -40,15 +40,15 @@ kube-prometheus-stack:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - {{ .Values.nodeName }} 
+                      - kubenode3 
       storageSpec:
         volumeClaimTemplate:
           spec:
-            storageClassName: {{ .Values.storageClassName }}
+            storageClassName: local-prometheus-storage
             accessModes: ["ReadWriteOnce"]
             resources:
               requests:
-                storage: {{ .Values.storageSize }}
+                storage: 50Gi
 
       retention: 15d
       retentionSize: 45GiB
