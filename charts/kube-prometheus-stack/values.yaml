@@ -4,8 +4,12 @@ nodeName: kubenode3
 storageSize: 50Gi
 storageClassName: local-prometheus-storage
 volumeMountPath: /mnt/prometheus-data
+# Note: Replace <USER> and <PASSWORD> with your desired username and password for Prometheus basic authentication.
+auth:
+  username:
+  password:
 
-# This is the values.yaml file for the Prometheus stack Helm chart.
+# This is the custom values.yaml file for the Prometheus stack Helm chart.
 kube-prometheus-stack:
   prometheus:
     ingress:
@@ -27,7 +31,7 @@ kube-prometheus-stack:
       tls:
       - hosts:
         - prometheus.<domain_name> #replace with your domain
-        secretName: prometheus-tls-cert # replace with your preferred secret name for TLS cert 
+        secretName: prometheus-tls-cert #replace with your preferred secret name for TLS cert 
     service:
       type: ClusterIP
     
