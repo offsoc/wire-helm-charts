@@ -4,7 +4,8 @@ nodeName: kubenode3
 storageSize: 50Gi
 storageClassName: local-prometheus-storage
 volumeMountPath: /mnt/prometheus-data
-# Note: Replace <USER> and <PASSWORD> with your desired username and password for Prometheus basic authentication.
+# Basic authentication credentials for Prometheus ingress.
+# set both username and password.
 auth:
   username:
   password:
