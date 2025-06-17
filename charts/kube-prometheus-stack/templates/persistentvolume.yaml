@@ -1,3 +1,4 @@
+{{- if and .Values.storageClassName .Values.storageSize .Values.volumeMountPath .Values.nodeName }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -19,4 +20,6 @@ spec:
               operator: In
               values:
                 - {{ .Values.nodeName }}
-            
+{{- else }}
+{{- fail "Error: All values (storageClassName, storageSize, volumeMountPath, nodeName) are required for creating PersistentVolume" }}
+{{- end }}

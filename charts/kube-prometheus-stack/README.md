@@ -19,3 +19,17 @@ To know more about how ingress shim of the cert-manager works with annotated ing
 
 
 Refer to the [values.yaml](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml) for all configurable options.
+
+
+## Versions
+
+ **@version 0.1.0**
+ * This version introduces ingress config with basic auth.
+ * Creates PV and storageClass by default on kubenode3.
+ * Pins prometheus POD on kubenode3 and uses the locally created storageClass
+ * Mange basic auth secret through custom values file
+
+ **@version 0.1.1**
+ * Creates basic auth using helm helper function [htpasswd](https://masterminds.github.io/sprig/crypto.html#htpasswd)
+ * Add helper NOTES
+ 
