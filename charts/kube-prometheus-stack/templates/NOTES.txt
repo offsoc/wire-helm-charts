@@ -1,0 +1,62 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }} in namespace {{ .Release.Namespace }}
+
+This chart deploys the Prometheus Stack with the following configurations:
+
+{{- if (index .Values "kube-prometheus-stack" "prometheus" "ingress" "enabled") }}
+Prometheus UI is accessible via Ingress:
+  URL: https://{{ index .Values "kube-prometheus-stack" "prometheus" "ingress" "hosts" 0 }}
+  Basic Auth: Enabled
+  Username: {{ .Values.auth.username }}
+{{- else }}
+Prometheus UI is not exposed via Ingress. To access it, you can:
+  1. Port-forward the Prometheus service:
+     kubectl port-forward svc/{{ .Release.Name }}-kube-prometheu-prometheus 9090:9090 -n {{ .Release.Namespace }}
+  2. Then access: http://localhost:9090
+{{- end }}
+
+Storage Configuration:
+{{- if and .Values.storageClassName .Values.storageSize }}
+  - StorageClass: {{ .Values.storageClassName }}
+  - Storage Size: {{ .Values.storageSize }}
+  - Node Affinity: {{ .Values.nodeName }}
+  - Mount Path: {{ .Values.volumeMountPath }}
+
+Node Verification Commands:
+  1. Check if node exists:
+     $ kubectl get node {{ .Values.nodeName }}
+
+  2. Check node configuration:
+     $ kubectl describe node {{ .Values.nodeName }}
+
+  3. Verify storage class:
+     $ kubectl get storageclass {{ .Values.storageClassName }}
+{{- else }}
+  No persistent storage configured. Using emptyDir volume.
+{{- end }}
+
+Components Status:
+{{- if not (index .Values "kube-prometheus-stack" "grafana" "enabled") }}
+  - Grafana: Disabled
+{{- end }}
+{{- if not (index .Values "kube-prometheus-stack" "alertmanager" "enabled") }}
+  - Alertmanager: Disabled
+{{- end }}
+
+Data Retention:
+  - Retention Period: {{ index .Values "kube-prometheus-stack" "prometheus" "prometheusSpec" "retention" }}
+  - Retention Size: {{ index .Values "kube-prometheus-stack" "prometheus" "prometheusSpec" "retentionSize" }}
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }} -n {{ .Release.Namespace }}
+  $ helm get all {{ .Release.Name }} -n {{ .Release.Namespace }}
+
+To view Prometheus metrics:
+  $ kubectl port-forward svc/{{ .Release.Name }}-kube-prometheu-prometheus 9090:9090 -n {{ .Release.Namespace }}
+
+To check logs:
+  $ kubectl logs -f -l app.kubernetes.io/name=prometheus -n {{ .Release.Namespace }}
+
+Need help? Visit: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack

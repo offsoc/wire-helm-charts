@@ -31,4 +31,5 @@ Refer to the [values.yaml](https://github.com/prometheus-community/helm-charts/b
 
  **@version 0.1.1**
  * Creates basic auth using helm helper function [htpasswd](https://masterminds.github.io/sprig/crypto.html#htpasswd)
+ * Add helper NOTES
  

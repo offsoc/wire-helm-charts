@@ -1,6 +1,10 @@
+{{- if .Values.storageClassName }}
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: {{ .Values.storageClassName }}
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
+{{- else }}
+{{- fail "Error: storageClassName is required to create a StorageClass" }}
+{{- end }}
