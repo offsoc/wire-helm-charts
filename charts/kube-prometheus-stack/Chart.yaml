@@ -1,4 +1,4 @@
 apiVersion: v1
 name: kube-prometheus-stack
 description: Wrapper Helm chart for Kubernetes Prometheus Stack
-version: 0.1.1
+version: 0.1.2

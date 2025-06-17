@@ -37,6 +37,13 @@ kube-prometheus-stack:
       type: ClusterIP
     
     prometheusSpec:
+      serviceMonitorSelector: {}
+      serviceMonitorNamespaceSelector: {}
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelector: {}
+      podMonitorNamespaceSelector: {}
+      podMonitorSelectorNilUsesHelmValues: false
+
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
