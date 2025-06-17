@@ -32,4 +32,9 @@ Refer to the [values.yaml](https://github.com/prometheus-community/helm-charts/b
  **@version 0.1.1**
  * Creates basic auth using helm helper function [htpasswd](https://masterminds.github.io/sprig/crypto.html#htpasswd)
  * Add helper NOTES
+
+ **@version 0.1.2**
+ * Scrape metrics by selecting all servicemonitors and podmonitors
+ * Scrape metrics from all the namespaces
+ * Prevents Helm from adding the default release label filter with `serviceMonitorSelectorNilUsesHelmValues: false`
  
