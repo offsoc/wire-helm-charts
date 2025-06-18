@@ -6,14 +6,14 @@ This chart deploys the Prometheus Stack with the following configurations:
 
 Prometheus UI is accessible via Ingress:
   URL: https://{{ index .Values "kube-prometheus-stack" "prometheus" "ingress" "hosts" 0 }}
-  Basic Auth: Enabled
-
+  
 {{- if and .Values.prometheus
             (hasKey .Values.prometheus "auth")
             (hasKey .Values.prometheus.auth "username")
             (hasKey .Values.prometheus.auth "password") }}
 
 🔐 Basic Auth Credentials:
+Basic Auth: Enabled
 Username: {{ .Values.prometheus.auth.username }}
 Password: {{ .Values.prometheus.auth.password }}
 
