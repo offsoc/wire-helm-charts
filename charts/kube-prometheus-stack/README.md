@@ -37,4 +37,8 @@ Refer to the [values.yaml](https://github.com/prometheus-community/helm-charts/b
  * Scrape metrics by selecting all servicemonitors and podmonitors
  * Scrape metrics from all the namespaces
  * Prevents Helm from adding the default release label filter with `serviceMonitorSelectorNilUsesHelmValues: false`
+
+ **@version 0.1.3**
+ * Provide auth credentials via -f flag during upgrade/install of the chart.
+ * Expose the credentials in the OUTPUT with NOTES template.
  
