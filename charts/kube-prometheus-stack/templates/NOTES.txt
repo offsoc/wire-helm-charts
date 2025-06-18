@@ -1,18 +1,21 @@
-Thank you for installing {{ .Chart.Name }}.
-
-With release: {{ .Release.Name }} and namespace: {{ .Release.Namespace }}
+Thank you for installing {{ .Chart.Name }} with release: {{ .Release.Name }} and namespace: {{ .Release.Namespace }}
 
 This chart deploys the Prometheus Stack with the following configurations:
 
 {{- if (index .Values "kube-prometheus-stack" "prometheus" "ingress" "enabled") }}
+
 Prometheus UI is accessible via Ingress:
   URL: https://{{ index .Values "kube-prometheus-stack" "prometheus" "ingress" "hosts" 0 }}
   Basic Auth: Enabled
-{{- if and .Values.auth (hasKey .Values.auth "username") (hasKey .Values.auth "password") }}
+
+{{- if and .Values.prometheus
+            (hasKey .Values.prometheus "auth")
+            (hasKey .Values.prometheus.auth "username")
+            (hasKey .Values.prometheus.auth "password") }}
 
 🔐 Basic Auth Credentials:
-Username: {{ .Values.auth.username }}
-Password: {{ .Values.auth.password }}
+Username: {{ .Values.prometheus.auth.username }}
+Password: {{ .Values.prometheus.auth.password }}
 
 {{- else }}
 ⚠️ No auth credentials were set via values.
