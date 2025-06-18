@@ -58,4 +58,4 @@ To learn more about the release, try:
 To check logs:
   $ kubectl logs -f -l app.kubernetes.io/name=prometheus -n {{ .Release.Namespace }}
 
-Need help? Visit: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+Need help? Visit: https://github.com/wireapp/helm-charts/tree/main/charts/kube-prometheus-stack
