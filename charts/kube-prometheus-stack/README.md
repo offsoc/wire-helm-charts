@@ -45,3 +45,6 @@ Refer to the [values.yaml](https://github.com/prometheus-community/helm-charts/b
   **@version 0.1.4**
  * Upgrade upstream kube-prometheus-stack version to 75.6.1 to have operator version Vo.83.0 which includes `fallback_scrape_protocol`
  * Add an external scrape config to scrape metrics from coturn service using `fallback_scrape_protocol`
+
+ **@version 0.1.5**
+ * fix: metric label for the coturn-with-fallback job
