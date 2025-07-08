@@ -1,0 +1,22 @@
+
+Thank you for installing the migrate-features Helm chart!
+
+This chart deploys a Kubernetes Job to migrate team features for the Wire app.
+
+**Job Details**
+- Name: {{ .Values.job.name }}
+- Namespace: {{ .Release.Namespace }}
+- Image: quay.io/wire/migrate-features:{{ .Chart.AppVersion }}
+
+**Cassandra config for migration**
+- Host: {{ .Values.job.cassandraHost }}
+- Port: {{ .Values.job.cassandraPort }}
+- Keyspace: {{ .Values.job.galleyKeyspace }}
+
+You can check the status of the Job with:
+  kubectl get jobs -n {{ .Release.Namespace }}
+
+To view logs:
+  kubectl logs job/{{ .Values.job.name }} -n {{ .Release.Namespace }}
+
+For more information, please look into the chart repository: https://github.com/wireapp/helm-charts

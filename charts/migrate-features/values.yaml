@@ -1,0 +1,8 @@
+# Default values for migrate-features.
+job:
+  name: migrate-features
+  restartPolicy: Never
+  backoffLimit: 4
+  cassandraHost: cassandra-external # Replace with your Cassandra service name `kubectl get svc -n default`
+  cassandraPort: 9042
+  galleyKeyspace: galley

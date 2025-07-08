@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.job.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      containers:
+        - name: {{ .Values.job.name }}
+          image: quay.io/wire/migrate-features:{{ .Chart.AppVersion }}
+          args:
+            - --cassandra-host-galley
+            - "{{ .Values.job.cassandraHost }}"
+            - --cassandra-port-galley
+            - "{{ .Values.job.cassandraPort }}"
+            - --cassandra-keyspace-galley
+            - "{{ .Values.job.galleyKeyspace }}"
+
+            
+      restartPolicy: {{ .Values.job.restartPolicy }}
+  backoffLimit: {{ .Values.job.backoffLimit }}
