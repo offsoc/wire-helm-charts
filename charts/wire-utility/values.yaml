@@ -1,0 +1,40 @@
+# All the values for the Wire utility stack Helm chart
+replicaCount: 1
+
+image:
+  repository: sukisuk/wire-utility
+  pullPolicy: Always
+  tag: "latest"
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Service configuration
+minio:
+  serviceName: minio-external
+  port: 9000
+  secretName: cargohold
+  secretKeys:
+    accessKey: awsKeyId
+    secretKey: awsSecretKey
+
+cassandra:
+  serviceName: cassandra-external
+  port: 9042
+
+rabbitmq:
+  serviceName: rabbitmq-external
+  port: 15672
+  secretName: background-worker
+  secretKeys:
+    username: rabbitmqUsername
+    password: rabbitmqPassword
+
+# Resource limits
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi

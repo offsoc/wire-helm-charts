@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "wire-utility.name" . }}
+  labels:
+    {{- include "wire-utility.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "wire-utility.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "wire-utility.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "wire-utility.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["bash"]
+        args:
+          - "-c"
+          - |
+            # create MinIO alias
+            mc alias set wire-minio http://${MINIO_SERVICE_NAME}:${MINIO_SERVICE_PORT} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
+            # Create cqlshrc config
+            mkdir -p /home/nonroot/.cassandra
+            cat <<EOF > /home/nonroot/.cassandra/cqlshrc
+            [connection]
+            hostname = ${CASSANDRA_SERVICE_NAME}
+            port = ${CASSANDRA_SERVICE_PORT}
+            EOF
+            # create rabbitmqadmin config
+            cat <<EOF > /home/nonroot/.rabbitmqadmin.conf
+            [default]
+            hostname = ${RABBITMQ_SERVICE_NAME}
+            port = ${RABBITMQ_SERVICE_PORT}
+            username = ${RABBITMQ_USERNAME}
+            password = ${RABBITMQ_PASSWORD}
+            EOF
+            # Debug message
+            echo 'Debug pod ready!'
+            tail -f /dev/null
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        env:
+        # MinIO config
+        - name: MINIO_SERVICE_NAME
+          value: {{ .Values.minio.serviceName | quote }}
+        - name: MINIO_SERVICE_PORT
+          value: {{ .Values.minio.port | quote }}
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.minio.secretName }}
+              key: {{ .Values.minio.secretKeys.accessKey }}
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.minio.secretName }}
+              key: {{ .Values.minio.secretKeys.secretKey }}
+
+        # Cassandra config
+        - name: CASSANDRA_SERVICE_NAME
+          value: {{ .Values.cassandra.serviceName | quote }}
+        - name: CASSANDRA_SERVICE_PORT
+          value: {{ .Values.cassandra.port | quote }}
+
+        # RabbitMQ config
+        - name: RABBITMQ_SERVICE_NAME
+          value: {{ .Values.rabbitmq.serviceName | quote }}
+        - name: RABBITMQ_SERVICE_PORT
+          value: {{ .Values.rabbitmq.port | quote }}
+        - name: RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rabbitmq.secretName }}
+              key: {{ .Values.rabbitmq.secretKeys.username }}
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rabbitmq.secretName }}
+              key: {{ .Values.rabbitmq.secretKeys.password }}
