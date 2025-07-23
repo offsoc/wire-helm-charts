@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: sukisuk/wire-utility
+  repository: sukisuk/wire-utility-tool
   pullPolicy: Always
   tag: "latest"
 
@@ -10,25 +10,13 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Service configuration
-minio:
-  serviceName: minio-external
-  port: 9000
-  secretName: cargohold
-  secretKeys:
-    accessKey: awsKeyId
-    secretKey: awsSecretKey
-
 cassandra:
-  serviceName: cassandra-external
   port: 9042
-
 rabbitmq:
-  serviceName: rabbitmq-external
-  port: 15672
-  secretName: background-worker
-  secretKeys:
-    username: rabbitmqUsername
-    password: rabbitmqPassword
+  port: 5672
+  mgmtPort: 15672
+elasticsearch:
+  port: 9200
 
 # Resource limits
 resources:
