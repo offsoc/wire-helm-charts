@@ -12,6 +12,8 @@ spec:
       {{- include "wire-utility.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/entrypoint: {{ include (print $.Template.BasePath "/utility-entrypoint-script.sh") . | sha256sum }}
       labels:
         {{- include "wire-utility.selectorLabels" . | nindent 8 }}
     spec:
