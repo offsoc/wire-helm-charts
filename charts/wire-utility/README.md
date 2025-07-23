@@ -8,86 +8,12 @@ This Helm chart deploys a Wire Utility debug pod on Kubernetes. It provides conf
 helm install wire-utility ./charts/wire-utility
 ```
 
-## Configuration
-
-Update parameters in `values.yaml` or override them via the command line.
-
-### MinIO
-
-Configure MinIO connection:
-
-- **minio.serviceName**: MinIO service name
-- **minio.port**: MinIO service port  
-- **minio.secretName**: Secret containing MinIO credentials
-- **minio.secretKeys.accessKey**: Key name for access key in secret
-- **minio.secretKeys.secretKey**: Key name for secret key in secret
-
-Example:
-
-```sh
-helm install wire-utility ./charts/wire-utility \
-    --set minio.serviceName=minio-external \
-    --set minio.port=9000
-```
-
-### Cassandra
-
-Configure Cassandra connection:
-
-- **cassandra.serviceName**: Cassandra service name
-- **cassandra.port**: Cassandra service port
-
-Example:
-
-```sh
-helm install wire-utility ./charts/wire-utility \
-    --set cassandra.serviceName=cassandra-external \
-    --set cassandra.port=9042
-```
-
-### RabbitMQ
-
-Configure RabbitMQ connection:
-
-- **rabbitmq.serviceName**: RabbitMQ service name
-- **rabbitmq.port**: RabbitMQ service port
-- **rabbitmq.secretName**: Secret containing RabbitMQ credentials
-- **rabbitmq.secretKeys.username**: Key name for username in secret
-- **rabbitmq.secretKeys.password**: Key name for password in secret
-
-Example:
-
-```sh
-helm install wire-utility ./charts/wire-utility \
-    --set rabbitmq.serviceName=rabbitmq-external \
-    --set rabbitmq.port=5672
-```
-
 ## Prerequisites
 
-Ensure the following secrets exist in your cluster:
+Ensure the following values files exist the values directory in the wire-server-deploy artifacts with updated service names and secrets:
 
-1. **MinIO Secret** (default: `cargohold`):
-   ```yaml
-   apiVersion: v1
-   kind: Secret
-   metadata:
-     name: cargohold
-   data:
-     awsKeyId: <base64-encoded-access-key>
-     awsSecretKey: <base64-encoded-secret-key>
-   ```
-
-2. **RabbitMQ Secret** (default: `background-worker`):
-   ```yaml
-   apiVersion: v1
-   kind: Secret
-   metadata:
-     name: background-worker
-   data:
-     rabbitmqUsername: <base64-encoded-username>
-     rabbitmqPassword: <base64-encoded-password>
-   ```
+- `values/wire-server/valuers.yaml`
+- `values/wire-server/secrets.yaml`
 
 ## Features
 
@@ -121,7 +47,7 @@ The debug pod comes with **preloaded tools** ready to use immediately:
 
 1. **Deploy the chart:**
    ```sh
-   helm install wire-utility ./charts/wire-utility
+   helm install wire-utility ./charts/wire-utility -f ./values/wire-server/valuers.yaml -f ./values/wire-server/secrets.yaml
    ```
 
 2. **Access the debug pod:**
@@ -137,4 +63,7 @@ The debug pod comes with **preloaded tools** ready to use immediately:
 - **View pod logs:** `kubectl logs wire-utility-0`
 - **Test connections:** Use the preloaded tools to verify connectivity
 
-Refer to `values.yaml` for all configurable options.
+Refer to the values and secrets of the wire-server
+- values.yaml
+- https://github.com/wireapp/wire-server-deploy/blob/master/values/wire-server/prod-values.example.yaml
+- https://github.com/wireapp/wire-server-deploy/blob/master/values/wire-server/prod-secrets.example.yaml

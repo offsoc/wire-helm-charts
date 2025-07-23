@@ -94,7 +94,7 @@ data:
     MINIO_HOST=$(echo ${MINIO_SERVICE_ENDPOINT} | sed 's|http[s]*://||' | cut -d':' -f1)
     MINIO_PORT=$(echo ${MINIO_SERVICE_ENDPOINT} | sed 's|http[s]*://||' | cut -d':' -f2)
     
-    echo "=== Service Status ==="
+    echo "=== Connectivity ==="
     timeout 2 nc -z $MINIO_HOST $MINIO_PORT >/dev/null 2>&1 && echo "✅ MinIO        $MINIO_HOST:$MINIO_PORT" || echo "❌ MinIO        $MINIO_HOST:$MINIO_PORT"
     timeout 2 nc -z ${CASSANDRA_SERVICE_NAME} ${CASSANDRA_SERVICE_PORT} >/dev/null 2>&1 && echo "✅ Cassandra    ${CASSANDRA_SERVICE_NAME}:${CASSANDRA_SERVICE_PORT}" || echo "❌ Cassandra    ${CASSANDRA_SERVICE_NAME}:${CASSANDRA_SERVICE_PORT}"
     timeout 2 nc -z ${RABBITMQ_SERVICE_NAME} ${RABBITMQ_SERVICE_PORT} >/dev/null 2>&1 && echo "✅ RabbitMQ     ${RABBITMQ_SERVICE_NAME}:${RABBITMQ_SERVICE_PORT}" || echo "❌ RabbitMQ     ${RABBITMQ_SERVICE_NAME}:${RABBITMQ_SERVICE_PORT}"
