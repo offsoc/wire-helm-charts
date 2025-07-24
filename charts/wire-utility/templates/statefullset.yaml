@@ -13,7 +13,8 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/entrypoint: {{ include (print $.Template.BasePath "/utility-entrypoint-script.sh") . | sha256sum }}
+        prometheus.io/scrape: "false"
+        deployment-timestamp: "{{ now | date "2006-01-02T15:04:05Z07:00" }}"
       labels:
         {{- include "wire-utility.selectorLabels" . | nindent 8 }}
     spec:
@@ -21,17 +22,9 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["bash"]
-        args: ["/scripts/entrypoint.sh"]
-        
-        volumeMounts:
-        - name: entrypoint-script
-          mountPath: /scripts
-          readOnly: true
-        
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
-        
+       
         env:
         # MinIO config
         - name: MINIO_SERVICE_ENDPOINT
@@ -64,9 +57,3 @@ spec:
           value: {{ include "wire-utility.elasticsearchServiceName" . }}
         - name: ES_PORT
           value: {{ .Values.elasticsearch.port | quote }}
-
-      volumes:
-      - name: entrypoint-script
-        configMap:
-          name: {{ include "wire-utility.fullname" . }}-entrypoint
-          defaultMode: 0755
