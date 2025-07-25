@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: sukisuk/wire-utility-tool
+  repository: quay.io/wire/wire-utility-tool
   pullPolicy: Always
   tag: "latest"
 
@@ -26,3 +26,7 @@ resources:
   requests:
     cpu: 50m
     memory: 64Mi
+
+# Probing services
+probeThread:
+  enabled: true

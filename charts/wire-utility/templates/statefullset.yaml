@@ -57,3 +57,7 @@ spec:
           value: {{ include "wire-utility.elasticsearchServiceName" . }}
         - name: ES_PORT
           value: {{ .Values.elasticsearch.port | quote }}
+        
+        # Enable probing thread
+        - name: ENABLE_PROBE_THREAD
+          value: {{ .Values.probeThread.enabled | quote }}

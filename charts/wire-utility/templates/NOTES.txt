@@ -1,162 +1,27 @@
-{{/* filepath: /Users/sukanta.ghosh/Workspace/helm-charts/charts/wire-utility/templates/NOTES.txt */}}
-🚀 Wire Utility Debug Pod has been deployed successfully!
+🚀 Wire Utility Debug Pod deployed!
 
-DEPLOYMENT INFO:
-  Release Name: {{ .Release.Name }}
-  Namespace: {{ .Release.Namespace }}
-  Chart Version: {{ .Chart.Version }}
-  App Version: {{ .Chart.AppVersion }}
+Release: {{ .Release.Name }} | Namespace: {{ .Release.Namespace }}
+Chart: {{ .Chart.Version }} | App: {{ .Chart.AppVersion }}
 
-POD STATUS:
-  Check pod status:
-    kubectl get pods -l app.kubernetes.io/name={{ include "wire-utility.name" . }} -n {{ .Release.Namespace }}
-  
-  View startup logs:
-    kubectl logs {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -f
+SERVICES:
+  MinIO:        {{ include "wire-utility.minioServiceEndpoint" . }}
+  Cassandra:    {{ include "wire-utility.cassandraServiceName" . }}:{{ .Values.cassandra.port }}
+  RabbitMQ:     {{ include "wire-utility.rabbitmqServiceName" . }}:{{ .Values.rabbitmq.port }}
+  Elasticsearch:{{ include "wire-utility.elasticsearchServiceName" . }}:{{ .Values.elasticsearch.port }}
 
-ACCESSING THE DEBUG POD:
-  📋 Interactive shell:
-    kubectl exec -it {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- bash
-
-  📊 Quick status check:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- status
-
-CONFIGURED SERVICES:
-  🗄️  MinIO:        {{ include "wire-utility.minioServiceEndpoint" . }}
-  🗃️  Cassandra:    {{ include "wire-utility.cassandraServiceName" . }}:{{ .Values.cassandra.port }}
-  🐰 RabbitMQ:     {{ include "wire-utility.rabbitmqServiceName" . }}:{{ .Values.rabbitmq.port }}
-  🔍 Elasticsearch: {{ include "wire-utility.elasticsearchServiceName" . }}:{{ .Values.elasticsearch.port }}
-
-AVAILABLE TOOLS IN POD:
-
-  🔧 Service-Specific Tools:
-    • status          - Show service connectivity status
-    • mc              - MinIO client (alias: wire-minio)
-    • cqlsh           - Cassandra CQL shell
-    • rabbitmqadmin   - RabbitMQ management
-    • es-debug.sh     - Elasticsearch debugging tool
-
-  🌐 Network & Connectivity:
-    • curl            - HTTP client and API testing
-    • wget            - File downloader
-    • nc (netcat)     - Network connectivity tester
-    • nslookup        - DNS lookup utility
-    • dig             - DNS lookup tool
-    • ping            - ICMP connectivity test
-    • traceroute      - Network path tracing
-    • tcpdump         - Network packet capture
-    • nmap            - Network port scanner
-
-  🔍 Analysis & Debugging:
-    • jq              - JSON processor and formatter
-    • python2/python3 - Python interpreters
-    • pip3            - Python package installer
-    • openssl         - SSL/TLS testing and certificates
-    
-  📁 File & System Utils:
-    • tree            - Directory tree viewer
-    • file            - File type identification
-    • less            - File pager
-    • vim/nano        - Text editors
-    • find            - File search utility
-    • grep/awk/sed    - Text processing tools
+TOOLS:
+  status, mc, cqlsh, rabbitmqadmin, es-debug.py
+  curl, wget, nc, nslookup, dig, ping, traceroute, tcpdump, nmap
+  jq, python2/3, pip3, openssl, tree, file, less, vim/nano, find, grep/awk/sed
 
 QUICK COMMANDS:
-  📈 Check all services:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- status
+  kubectl exec -it {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- bash
+  kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- status
 
-  🗄️  MinIO operations:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- mc ls wire-minio
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- mc admin info wire-minio
+TROUBLESHOOT:
+  kubectl get pods,svc -n <namespace>
+  kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- nc -z <service> <port>
+  kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- nslookup <service>
+  kubectl delete pod {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }}
 
-  🗃️  Cassandra operations:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- cqlsh
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- cqlsh -e "DESCRIBE KEYSPACES;"
-
-  🐰 RabbitMQ operations:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- rabbitmqadmin list queues
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- rabbitmqadmin list exchanges
-
-  🔍 Elasticsearch operations:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- es-debug.sh health
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- es-debug.sh indices
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- es-debug.sh usages
-
-NETWORK DEBUGGING EXAMPLES:
-  🔍 Test connectivity:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- nc -z <host> <port>
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- ping <host>
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- traceroute <host>
-
-  🔍 DNS resolution:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- nslookup <service-name>
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- dig <service-name>
-
-  🔍 HTTP/API testing:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- curl -v <url>
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- curl -s <api-endpoint> | jq .
-
-  🔍 Port scanning:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- nmap -p <port-range> <host>
-
-  🔍 SSL/TLS testing:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- openssl s_client -connect <host>:<port>
-
-  🔍 Network packet capture:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- tcpdump -i any -n host <host>
-
-TROUBLESHOOTING:
-  🔧 If services show as unreachable:
-    1. Verify service names and ports in values/wire-server/values.yaml
-    2. Check if target services are running:
-       kubectl get pods,svc -n <target-namespace>
-    3. Verify network policies allow communication
-    4. Check DNS resolution:
-       kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- nslookup <service-name>
-    5. Test connectivity with different tools:
-       kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- ping <service-name>
-       kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- nc -z <service-name> <port>
-
-  📝 View entrypoint script:
-    kubectl get configmap {{ include "wire-utility.fullname" . }}-entrypoint -n {{ .Release.Namespace }} -o yaml
-
-  🔄 Restart the pod:
-    kubectl delete pod {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }}
-
-  📊 Check pod events:
-    kubectl describe pod {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }}
-
-PYTHON SCRIPTING:
-  🐍 Run Python scripts for custom debugging:
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- python3 -c "import requests; print(requests.get('http://service:port').status_code)"
-    kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- pip3 install <package>
-
-UPDATING THE DEPLOYMENT:
-  📦 Update configuration:
-    helm upgrade {{ .Release.Name }} ./charts/wire-utility -f ./values/wire-server/values.yaml -f ./values/wire-server/secrets.yaml
-
-  🔄 Force pod restart:
-    helm upgrade {{ .Release.Name }} ./charts/wire-utility -n {{ .Release.Namespace }} -f ./values/wire-server/values.yaml -f ./values/wire-server/secrets.yaml --force
-
-  🗑️  Uninstall:
-    helm uninstall {{ .Release.Name }} -n {{ .Release.Namespace }}
-
-AUTO-RESTART BEHAVIOR:
-  ✅ Pods automatically restart when:
-    • Entrypoint script changes (checksum/entrypoint)
-    • Image tag/repository changes
-    • Environment variables change
-    • Resource limits change
-
-  ⚠️  Manual restart needed when:
-    • Service endpoints change (unless additional checksums added)
-    • ConfigMap updated outside of Helm
-
----
-💡 Pro tip: The pod shows service status automatically when you exec into it!
-   Just run: kubectl exec -it {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- bash
-
-📚 This pod is a complete network debugging toolkit with service-specific clients,
-   network analysis tools, and scriptable Python environment!
-
-🎯 Happy debugging! 🐛
+🎯 Happy debugging!
