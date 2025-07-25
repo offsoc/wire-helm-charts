@@ -1,69 +1,50 @@
 # wire-utility Helm Chart
 
-This Helm chart deploys a Wire Utility debug pod on Kubernetes. It provides configurable parameters for connecting to MinIO, Cassandra, and RabbitMQ services.
+Deploys a Wire Utility debug pod for troubleshooting MinIO, Cassandra, RabbitMQ, and Elasticsearch in Kubernetes.
 
-## Usage
+## Quick Start
 
 ```sh
 helm install wire-utility ./charts/wire-utility -f ./values/wire-server/values.yaml -f ./values/wire-server/secrets.yaml
+kubectl exec -it wire-utility-0 -- bash
 ```
 
-## Prerequisites
+## Configuration
 
-Ensure the following values files exist the values directory in the wire-server-deploy artifacts with updated service names and secrets:
+- Update service names and secrets in:
+  - `values/wire-server/values.yaml`
+  - `values/wire-server/secrets.yaml`
+- Default settings are in `values.yaml`.
+- All config values are set as environment variables in the pod.
 
-- `values/wire-server/values.yaml`
-- `values/wire-server/secrets.yaml`
+**Service probing** runs every minute by default.  
+To disable, set in `values.yaml`:
+```yaml
+probeThread:
+  enabled: false
+```
 
-## Features
+## Tools Available
 
-The debug pod comes with **preloaded tools** ready to use immediately:
+- MinIO Client (`mc`)
+- Cassandra Shell (`cqlsh`)
+- RabbitMQ Admin (`rabbitmqadmin`)
+- es-debug.py, curl, wget, nc, nslookup, dig, ping, traceroute, tcpdump, nmap, jq, python2/3, pip3, openssl, tree, file, less, vim/nano, find, grep/awk/sed
 
-- **MinIO Client (`mc`)**: Pre-configured with alias `wire-minio`
-  ```sh
-  # Try these commands for test only:
-  mc ls wire-minio
-  mc mb wire-minio/test-bucket
-  mc cp file.txt wire-minio/bucket/
-  ```
+## Example Commands
 
-- **Cassandra Shell (`cqlsh`)**: Auto-configured connection settings
-  ```sh
-  # Try these commands:
-  cqlsh
-  cqlsh -e "DESCRIBE KEYSPACES;"
-  cqlsh -e "SELECT * FROM system.local;"
-  ```
-
-- **RabbitMQ Admin (`rabbitmqadmin`)**: Pre-configured for management operations
-  ```sh
-  # Try these commands:
-  rabbitmqadmin list queues
-  rabbitmqadmin list exchanges
-  rabbitmqadmin list users
-  ```
-
-## Getting Started
-
-1. **Deploy the chart:**
-   ```sh
-   helm install wire-utility ./charts/wire-utility -f ./values/wire-server/valuers.yaml -f ./values/wire-server/secrets.yaml
-   ```
-
-2. **Access the debug pod:**
-   ```sh
-   kubectl exec -it wire-utility-0 -- bash
-   ```
-
-3. **Start using the tools immediately** - no additional setup required!
+```sh
+mc ls wire-minio
+cqlsh -e "DESCRIBE KEYSPACES;"
+rabbitmqadmin list queues
+```
 
 ## Troubleshooting
 
-- **Check pod status:** `kubectl get pods | grep wire-utility`
-- **View pod logs:** `kubectl logs wire-utility-0`
-- **Test connections:** Use the preloaded tools to verify connectivity
+- Pod status: `kubectl get pods | grep wire-utility`
+- Logs: `kubectl logs wire-utility-0`
+- Connectivity: Use built-in tools
 
-Refer to the values and secrets of the wire-server
-- values.yaml
-- https://github.com/wireapp/wire-server-deploy/blob/master/values/wire-server/prod-values.example.yaml
-- https://github.com/wireapp/wire-server-deploy/blob/master/values/wire-server/prod-secrets.example.yaml
+For reference values and secrets, see:
+- [prod-values.example.yaml](https://github.com/wireapp/wire-server-deploy/blob/master/values/wire-server/prod-values.example.yaml)
+- [prod-secrets.example.yaml](https://github.com/wireapp/wire-server-deploy/blob/master/values/wire-server/prod-secrets.example.yaml)
