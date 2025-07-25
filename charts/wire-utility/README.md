@@ -5,14 +5,14 @@ This Helm chart deploys a Wire Utility debug pod on Kubernetes. It provides conf
 ## Usage
 
 ```sh
-helm install wire-utility ./charts/wire-utility
+helm install wire-utility ./charts/wire-utility -f ./values/wire-server/values.yaml -f ./values/wire-server/secrets.yaml
 ```
 
 ## Prerequisites
 
 Ensure the following values files exist the values directory in the wire-server-deploy artifacts with updated service names and secrets:
 
-- `values/wire-server/valuers.yaml`
+- `values/wire-server/values.yaml`
 - `values/wire-server/secrets.yaml`
 
 ## Features
@@ -21,7 +21,7 @@ The debug pod comes with **preloaded tools** ready to use immediately:
 
 - **MinIO Client (`mc`)**: Pre-configured with alias `wire-minio`
   ```sh
-  # Try these commands:
+  # Try these commands for test only:
   mc ls wire-minio
   mc mb wire-minio/test-bucket
   mc cp file.txt wire-minio/bucket/
