@@ -17,6 +17,7 @@ kubectl exec -it wire-utility-0 -- bash
 - Default settings are in `values.yaml`.
 - All config values are set as environment variables in the pod.
 
+** To change the image tag, update the `appVersion` in the Chart.yaml file.
 **Service probing** runs every minute by default.  
 To disable, set in `values.yaml`:
 ```yaml
