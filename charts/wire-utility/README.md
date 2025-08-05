@@ -30,6 +30,7 @@ probeThread:
 - MinIO Client (`mc`)
 - Cassandra Shell (`cqlsh`)
 - RabbitMQ Admin (`rabbitmqadmin`)
+- Postgresql shell (`psql`)
 - es-debug.py, curl, wget, nc, nslookup, dig, ping, traceroute, tcpdump, nmap, jq, python2/3, pip3, openssl, tree, file, less, vim/nano, find, grep/awk/sed
 
 ## Example Commands
@@ -38,6 +39,7 @@ probeThread:
 mc ls wire-minio
 cqlsh -e "DESCRIBE KEYSPACES;"
 rabbitmqadmin list queues
+psql -c "SELECT current_timestamp;"
 ```
 
 ## Troubleshooting
