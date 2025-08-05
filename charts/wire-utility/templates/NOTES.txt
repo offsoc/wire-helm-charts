@@ -8,9 +8,10 @@ SERVICES:
   Cassandra:    {{ include "wire-utility.cassandraServiceName" . }}:{{ .Values.cassandra.port }}
   RabbitMQ:     {{ include "wire-utility.rabbitmqServiceName" . }}:{{ .Values.rabbitmq.port }}
   Elasticsearch:{{ include "wire-utility.elasticsearchServiceName" . }}:{{ .Values.elasticsearch.port }}
+  Postgresql:   {{ include "wire-utility.postgresqlServiceName" . }}:{{ include "wire-utility.postgresqlPort" .}}
 
 TOOLS:
-  status, mc, cqlsh, rabbitmqadmin, es-debug.py
+  status, mc, cqlsh, rabbitmqadmin, psql, es-debug.py
   curl, wget, nc, nslookup, dig, ping, traceroute, tcpdump, nmap
   jq, python2/3, pip3, openssl, tree, file, less, vim/nano, find, grep/awk/sed
 

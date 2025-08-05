@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
@@ -58,6 +58,19 @@ spec:
         - name: ES_PORT
           value: {{ .Values.elasticsearch.port | quote }}
         
+        # Postgresql config
+        - name:  PGHOST
+          value: {{ include "wire-utility.postgresqlServiceName" . }}
+        - name:  PGPORT
+          value: {{ include "wire-utility.postgresqlPort" . }}
+        - name:  PGUSER
+          value: {{ include "wire-utility.postgresqlUser" . }}
+        - name:  PGPASSWORD 
+          value: {{ include "wire-utility.postgresqlSecret" . }}
+        - name:  PGDATABASE
+          value: {{ include "wire-utility.postgresqlDbname" . }}
+        
         # Enable probing thread
         - name: ENABLE_PROBE_THREAD
           value: {{ .Values.probeThread.enabled | quote }}
+        

@@ -82,7 +82,7 @@ Check if cargohold secrets are provided
 Check if brig secrets are provided
 */}}
 {{- define "wire-utility.hasBrigSecrets" -}}
-{{- if and .Values.brig .Values.brig.secrets .Values.brig.secrets.rabbitmq -}}
+{{- if and .Values.brig .Values.brig.secrets .Values.brig.secrets.rabbitmq .Values.brig.secrets.pgPassword -}}
 {{- "true" -}}
 {{- else -}}
 {{- "false" -}}
@@ -167,5 +167,48 @@ Elasticsearch service name
 {{- .Values.brig.config.elasticsearch.host | quote -}}
 {{- else -}}
 {{- fail "brig.config.elasticsearch.host is required. Make sure you provided the values/wire-server/values.yaml with -f flag." -}}
+{{- end }}
+{{- end }}
+
+{{/*
+Validate and get postgresql secret and service
+*/}}
+{{- define "wire-utility.postgresqlSecret" -}}
+{{- if eq (include "wire-utility.hasBrigSecrets" .) "true" -}}
+{{- .Values.brig.secrets.pgPassword -}}
+{{- else -}}
+{{- fail "brig.secrets.pgPassword is required. Make sure you provided the values/wire-server/secrets.yaml with -f flag." -}}
+{{- end }}
+{{- end }}
+
+{{- define "wire-utility.postgresqlServiceName" -}}
+{{- if eq (include "wire-utility.hasBrig" .) "true" -}}
+{{- .Values.brig.config.postgresql.host | quote -}}
+{{- else -}}
+{{- fail "brig.config.postgresql.host is required. Make sure you provided the values/wire-server/values.yaml with -f flag." -}}
+{{- end }}
+{{- end }}
+
+{{- define "wire-utility.postgresqlPort" -}}
+{{- if eq (include "wire-utility.hasBrig" .) "true" -}}
+{{- .Values.brig.config.postgresql.port | quote -}}
+{{- else -}}
+{{- fail "brig.config.postgresql.port is required. Make sure you provided the values/wire-server/values.yaml with -f flag." -}}
+{{- end }}
+{{- end }}
+
+{{-  define "wire-utility.postgresqlUser" -}}
+{{- if eq (include "wire-utility.hasBrig" .) "true" -}}
+{{- .Values.brig.config.postgresql.user -}}
+{{- else -}}
+{{- fail "brig.config.postgresql.user is required. Make sure you provided the values/wire-server/values.yaml with -f flag." -}}
+{{- end }}
+{{- end }}
+
+{{- define "wire-utility.postgresqlDbname" -}}
+{{- if eq (include "wire-utility.hasBrig" .) "true" -}}
+{{- .Values.brig.config.postgresql.dbname -}}
+{{- else -}}
+{{- fail "brig.config.postgresql.dbname is required. Make sure you provided the values/wire-server/values.yaml with -f flag." -}}
 {{- end }}
 {{- end }}
