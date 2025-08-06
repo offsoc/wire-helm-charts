@@ -1,0 +1,28 @@
+🚀 Wire Utility Debug Pod deployed!
+
+Release: {{ .Release.Name }} | Namespace: {{ .Release.Namespace }}
+Chart: {{ .Chart.Version }} | App: {{ .Chart.AppVersion }}
+
+SERVICES:
+  MinIO:        {{ include "wire-utility.minioServiceEndpoint" . }}
+  Cassandra:    {{ include "wire-utility.cassandraServiceName" . }}:{{ .Values.cassandra.port }}
+  RabbitMQ:     {{ include "wire-utility.rabbitmqServiceName" . }}:{{ .Values.rabbitmq.port }}
+  Elasticsearch:{{ include "wire-utility.elasticsearchServiceName" . }}:{{ .Values.elasticsearch.port }}
+  Postgresql:   {{ include "wire-utility.postgresqlServiceName" . }}:{{ include "wire-utility.postgresqlPort" .}}
+
+TOOLS:
+  status, mc, cqlsh, rabbitmqadmin, psql, es-debug.py
+  curl, wget, nc, nslookup, dig, ping, traceroute, tcpdump, nmap
+  jq, python2/3, pip3, openssl, tree, file, less, vim/nano, find, grep/awk/sed
+
+QUICK COMMANDS:
+  kubectl exec -it {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- bash
+  kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- status
+
+TROUBLESHOOT:
+  kubectl get pods,svc -n <namespace>
+  kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- nc -z <service> <port>
+  kubectl exec {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }} -- nslookup <service>
+  kubectl delete pod {{ include "wire-utility.fullname" . }}-0 -n {{ .Release.Namespace }}
+
+🎯 Happy debugging!

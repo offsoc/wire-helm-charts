@@ -1,0 +1,31 @@
+# All the values for the Wire utility stack Helm chart
+replicaCount: 1
+
+image:
+  repository: quay.io/wire/wire-utility-tool
+  pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Service configuration
+cassandra:
+  port: 9042
+rabbitmq:
+  port: 5672
+  mgmtPort: 15672
+elasticsearch:
+  port: 9200
+
+# Resource limits
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+# Probing services
+probeThread:
+  enabled: true

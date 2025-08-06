@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "wire-utility.name" . }}
+  labels:
+    {{- include "wire-utility.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "wire-utility.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "wire-utility.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "false"
+        deployment-timestamp: "{{ now | date "2006-01-02T15:04:05Z07:00" }}"
+      labels:
+        {{- include "wire-utility.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+       
+        env:
+        # MinIO config
+        - name: MINIO_SERVICE_ENDPOINT
+          value: {{ include "wire-utility.minioServiceEndpoint" . }}
+        - name: MINIO_ACCESS_KEY
+          value: {{ include "wire-utility.minioAccessKey" . }}
+        - name: MINIO_SECRET_KEY
+          value: {{ include "wire-utility.minioSecretKey" . }}
+
+        # Cassandra config
+        - name: CASSANDRA_SERVICE_NAME
+          value: {{ include "wire-utility.cassandraServiceName" . }}
+        - name: CASSANDRA_SERVICE_PORT
+          value: {{ .Values.cassandra.port | quote }}
+
+        # RabbitMQ config
+        - name: RABBITMQ_SERVICE_NAME
+          value: {{ include "wire-utility.rabbitmqServiceName" . }}
+        - name: RABBITMQ_MGMT_PORT
+          value: {{ .Values.rabbitmq.mgmtPort | quote }}
+        - name: RABBITMQ_SERVICE_PORT
+          value: {{ .Values.rabbitmq.port | quote }}
+        - name: RABBITMQ_USERNAME
+          value: {{ include "wire-utility.rabbitmqUsername" . }}
+        - name: RABBITMQ_PASSWORD
+          value: {{ include "wire-utility.rabbitmqPassword" . }}
+        
+        # Elasticsearch config
+        - name: ES_SERVICE_NAME
+          value: {{ include "wire-utility.elasticsearchServiceName" . }}
+        - name: ES_PORT
+          value: {{ .Values.elasticsearch.port | quote }}
+        
+        # Postgresql config
+        - name:  PGHOST
+          value: {{ include "wire-utility.postgresqlServiceName" . }}
+        - name:  PGPORT
+          value: {{ include "wire-utility.postgresqlPort" . }}
+        - name:  PGUSER
+          value: {{ include "wire-utility.postgresqlUser" . }}
+        - name:  PGPASSWORD 
+          value: {{ include "wire-utility.postgresqlSecret" . }}
+        - name:  PGDATABASE
+          value: {{ include "wire-utility.postgresqlDbname" . }}
+        
+        # Enable probing thread
+        - name: ENABLE_PROBE_THREAD
+          value: {{ .Values.probeThread.enabled | quote }}
+        
