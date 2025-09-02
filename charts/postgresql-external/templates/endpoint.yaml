@@ -27,7 +27,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    postgres.discovery/last-topology: "primary:{{ index .Values.RWIPs 0 }};standbys:{{ join "," (rest .Values.RWIPs) }}"
+    postgres.discovery/last-topology: "primary:{{ index .Values.RWIPs 0 }};standbys:{{ join "," .Values.ROIPs }}"
     postgres.discovery/last-update: "{{ now | date "2006-01-02T15:04:05Z07:00" }}"
 subsets:
   - addresses:
@@ -67,7 +67,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    postgres.discovery/last-topology: "primary:{{ index .Values.RWIPs 0 }};standbys:{{ join "," (rest .Values.RWIPs) }}"
+    postgres.discovery/last-topology: "primary:{{ index .Values.RWIPs 0 }};standbys:{{ join "," .Values.ROIPs }}"
     postgres.discovery/last-update: "{{ now | date "2006-01-02T15:04:05Z07:00" }}"
 subsets:
   - addresses:

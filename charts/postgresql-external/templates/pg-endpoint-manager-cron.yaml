@@ -40,6 +40,9 @@ spec:
               value: "repmgr"
             - name: PGCONNECT_TIMEOUT
               value: "5"
+            - name: PG_NODES
+              value: "{{ join "," (concat .Values.RWIPs .Values.ROIPs) }}"
+
 
             resources:
               requests:
