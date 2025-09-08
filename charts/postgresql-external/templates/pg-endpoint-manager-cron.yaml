@@ -6,17 +6,17 @@ metadata:
   labels:
     app: postgres-endpoint-manager
 spec:
-  schedule: "*/2 * * * *"
+  schedule: "{{ .Values.cronJob.schedule }}"
   concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 5
-  failedJobsHistoryLimit: 5
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
 
   jobTemplate:
     spec:
       # Keep completed jobs around for debugging
       ttlSecondsAfterFinished: 3600  # Keep pods for 1 hour after completion
       backoffLimit: 1
-      activeDeadlineSeconds: 180
+      activeDeadlineSeconds: 90
 
       template:
         spec:
@@ -25,8 +25,8 @@ spec:
 
           containers:
           - name: endpoint-manager
-            image: quay.io/wire/wire-utility-tool:pg-manager-latest
-            imagePullPolicy: Always
+            image: {{ .Values.cronJob.image.repository }}:{{ .Values.cronJob.image.tag }}
+            imagePullPolicy: {{ .Values.cronJob.image.pullPolicy }}
 
             # Optional: Override default node configuration via environment
             env:
@@ -41,8 +41,13 @@ spec:
             - name: PGCONNECT_TIMEOUT
               value: "5"
             - name: PG_NODES
-              value: "{{ join "," (concat .Values.RWIPs .Values.ROIPs) }}"
-
+              value: "{{ include "postgresql-external.allNodes" . }}"
+            - name: RW_SERVICE
+              value: "{{ .Chart.Name }}-rw"
+            - name: RO_SERVICE
+              value: "{{ .Chart.Name }}-ro"
+            - name: CHART_NAME
+              value: "{{ .Chart.Name }}"
 
             resources:
               requests:
