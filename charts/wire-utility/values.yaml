@@ -1,4 +1,9 @@
-# All the values for the Wire utility stack Helm chart
+# All the values for the Wire utility stack Helm chart. This values here are taken from the example values and
+# should be adjusted according to your environment and requirements.
+# https://github.com/wireapp/wire-server-deploy/blob/master/values/wire-server/prod-secrets.example.yaml
+# https://github.com/wireapp/wire-server-deploy/blob/master/values/wire-server/prod-values.example.yaml
+
+# Override this values  by passing external values and secrets from the wire-server values such as `-f values/wire-server/values.yaml` and `-f values/wire-server/secrets.yaml`
 replicaCount: 1
 
 image:
@@ -29,3 +34,33 @@ resources:
 # Probing services
 probeThread:
   enabled: true
+
+# Essential Wire server configuration for wire-utility debug pod
+# Only includes values required by helper templates for validation and service discovery
+
+cargohold:
+  config:
+    aws:
+      s3Endpoint: "http://minio-external:9000"
+  secrets:
+    awsKeyId: "dummykey"
+    awsSecretKey: "dummysecret"
+
+brig:
+  config:
+    cassandra:
+      host: "cassandra-external"
+    rabbitmq:
+      host: "rabbitmq-external"
+    elasticsearch:
+      host: "elasticsearch-external"
+    postgresql:
+      host: "postgresql-external-rw"
+      port: "5432"
+      user: "wire-server"
+      dbname: "wire-server"
+  secrets:
+    pgPassword: "verysecurepassword"
+    rabbitmq:
+      username: "wire-server"
+      password: "verysecurepassword"
