@@ -2,12 +2,12 @@ portPostgresql: 5432
 
 ## Configure this helm chart with:
 # read write IPs of the postgresql servers that are used for read and write operations.
-RWIPs:
-  - 192.168.122.31
-# # read only IPs of the postgresql servers that are used for read operations.
-ROIPs:
-  - 192.168.122.32
-  - 192.168.122.33
+# RWIPs:
+#   - 192.168.122.31
+# read only IPs of the postgresql servers that are used for read operations.
+# ROIPs:
+#   - 192.168.122.32
+#   - 192.168.122.33
 
 
 # CronJob configuration
