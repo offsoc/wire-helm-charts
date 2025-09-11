@@ -15,5 +15,5 @@ cronJob:
   schedule: "*/2 * * * *"
   image:
     repository: quay.io/wire/wire-utility-tool
-    tag: pg-manager-pr-3
+    tag: "pg-manager-1.1.0"
     pullPolicy: Always
