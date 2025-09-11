@@ -18,7 +18,7 @@ kubectl exec -it wire-utility-0 -- bash
 - All config values are set as environment variables in the pod.
 
 ** To change the image tag, update the `appVersion` in the Chart.yaml file.
-**Service probing** runs every minute by default.  
+**Service probing** runs every minute by default.
 To disable, set in `values.yaml`:
 ```yaml
 probeThread:
@@ -51,3 +51,4 @@ psql -c "SELECT current_timestamp;"
 For reference values and secrets, see:
 - [prod-values.example.yaml](https://github.com/wireapp/wire-server-deploy/blob/master/values/wire-server/prod-values.example.yaml)
 - [prod-secrets.example.yaml](https://github.com/wireapp/wire-server-deploy/blob/master/values/wire-server/prod-secrets.example.yaml)
+- [wire-utility-workload image release](https://github.com/wireapp/wire-utility-tool/releases/tag/v1.2.0)
