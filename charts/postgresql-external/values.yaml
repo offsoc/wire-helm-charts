@@ -14,6 +14,12 @@ portPostgresql: 5432
 cronJob:
   schedule: "*/2 * * * *"
   image:
-    repository: quay.io/wire/wire-utility-tool
-    tag: "pg-manager-1.1.0"
+    repository: quay.io/wire/postgres-endpoint-manager
+    tag: "1.1.0"
     pullPolicy: Always
+  env:
+    TZ: "UTC"
+    PGPASSWORD: "securepassword"
+    PGUSER: "repmgr"
+    PGDATABASE: "repmgr"
+    PGCONNECT_TIMEOUT: "5"

@@ -17,6 +17,7 @@ This Helm chart creates headless Kubernetes `Service`s with custom `Endpoint`s t
 
 ### pg-endpoint-manager CronJob
 - **Purpose**: Automatically updates endpoint annotations with PostgreSQL cluster topology
+- **Source**: [https://github.com/wireapp/postgres-endpoint-manager](https://github.com/wireapp/postgres-endpoint-manager)
 - **Schedule**: Runs every 2 minutes (configurable)
 - **Annotations Updated**:
   - `postgres.discovery/last-topology`: Current primary and standby server IPs
@@ -43,8 +44,8 @@ ROIPs:
 cronJob:
   schedule: "*/2 * * * *"  # Every 2 minutes
   image:
-    repository: quay.io/wire/wire-utility-tool
-    tag: pg-manager-latest
+    repository: quay.io/wire/postgres-endpoint-manager
+    tag: "1.0.0"
 ```
 
 ## Usage
@@ -72,3 +73,4 @@ metadata:
     postgres.discovery/last-topology: "primary:192.168.1.10;standbys:192.168.1.11,192.168.1.12"
     postgres.discovery/last-update: "2025-09-01T08:34:51+00:00"
 ```
+

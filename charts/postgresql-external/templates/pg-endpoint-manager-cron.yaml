@@ -31,15 +31,15 @@ spec:
             # Optional: Override default node configuration via environment
             env:
             - name: TZ
-              value: "UTC"
+              value: "{{ .Values.cronJob.env.TZ }}"
             - name: PGPASSWORD
-              value: "securepassword"
+              value: "{{ .Values.cronJob.env.PGPASSWORD }}"
             - name: PGUSER
-              value: "repmgr"
+              value: "{{ .Values.cronJob.env.PGUSER }}"
             - name: PGDATABASE
-              value: "repmgr"
+              value: "{{ .Values.cronJob.env.PGDATABASE }}"
             - name: PGCONNECT_TIMEOUT
-              value: "5"
+              value: "{{ .Values.cronJob.env.PGCONNECT_TIMEOUT }}"
             - name: PG_NODES
               value: "{{ include "postgresql-external.allNodes" . }}"
             - name: RW_SERVICE
