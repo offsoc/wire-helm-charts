@@ -1,0 +1,67 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-endpoint-manager
+  namespace: default
+  labels:
+    app: postgres-endpoint-manager
+spec:
+  schedule: "{{ .Values.cronJob.schedule }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+
+  jobTemplate:
+    spec:
+      # Keep completed jobs around for debugging
+      ttlSecondsAfterFinished: 3600  # Keep pods for 1 hour after completion
+      backoffLimit: 1
+      activeDeadlineSeconds: 90
+
+      template:
+        spec:
+          serviceAccountName: postgres-endpoint-manager
+          restartPolicy: Never
+
+          containers:
+          - name: endpoint-manager
+            image: {{ .Values.cronJob.image.repository }}:{{ .Values.cronJob.image.tag }}
+            imagePullPolicy: {{ .Values.cronJob.image.pullPolicy }}
+
+            # Optional: Override default node configuration via environment
+            env:
+            - name: TZ
+              value: "{{ .Values.cronJob.env.TZ }}"
+            - name: PGPASSWORD
+              value: "{{ .Values.cronJob.env.PGPASSWORD }}"
+            - name: PGUSER
+              value: "{{ .Values.cronJob.env.PGUSER }}"
+            - name: PGDATABASE
+              value: "{{ .Values.cronJob.env.PGDATABASE }}"
+            - name: PGCONNECT_TIMEOUT
+              value: "{{ .Values.cronJob.env.PGCONNECT_TIMEOUT }}"
+            - name: PG_NODES
+              value: "{{ include "postgresql-external.allNodes" . }}"
+            - name: RW_SERVICE
+              value: "{{ .Chart.Name }}-rw"
+            - name: RO_SERVICE
+              value: "{{ .Chart.Name }}-ro"
+            - name: CHART_NAME
+              value: "{{ .Chart.Name }}"
+
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "50m"
+              limits:
+                memory: "128Mi"
+                cpu: "200m"
+
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                - ALL
