@@ -15,8 +15,8 @@ cronJob:
   schedule: "*/2 * * * *"
   image:
     repository: quay.io/wire/postgres-endpoint-manager
-    tag: "1.1.0"
-    pullPolicy: Always
+    tag: "1.0.0"
+    pullPolicy: Never
   env:
     TZ: "UTC"
     PGPASSWORD: "securepassword"
